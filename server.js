@@ -9,6 +9,25 @@ const routes = require('./controllers/');
 const sequelize = require('./config/connection');
 const hbs = exphbs.create();
 
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+require('dotenv').config();
+
+
+const sess = {
+  secret: process.env.SESS_sec,
+  cookie: {},
+  resave: false,
+  saveUninitialize: true,
+  store: new SequelizeStore({
+    db: sequelize
+  })
+};
+
+
+app.use(session(sess));
+
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static(path.join(__dirname, 'public')));
